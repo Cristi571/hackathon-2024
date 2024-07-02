@@ -1,15 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IUser extends Document {
-  name: string;
-  email: string;
-  password: string;
+  nfc_id: string;
+  payload: string;
 }
 
 const userSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  nfc_id: { type: String, required: true, unique: true },
+  payload: { type: String, required: true },
 });
 
 const User = mongoose.model<IUser>('User', userSchema);

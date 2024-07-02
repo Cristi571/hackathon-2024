@@ -5,9 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
+const nfcRoutes_1 = __importDefault(require("./routes/nfcRoutes"));
 const app = (0, express_1.default)();
 // Middleware to parse JSON bodies
 app.use(express_1.default.json());
 // Define routes
 app.use('/api/users', userRoutes_1.default);
+app.use('/api/nfc', nfcRoutes_1.default);
 exports.default = app;
