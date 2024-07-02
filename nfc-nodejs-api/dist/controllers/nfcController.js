@@ -15,15 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateNFC = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userModel_1 = __importDefault(require("../models/userModel"));
+const userConnectionModel_1 = __importDefault(require("../models/userConnectionModel"));
+const cryptoUtils_1 = require("../utils/cryptoUtils");
 const authenticateNFC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nfc_id, token } = req.body;
     console.log('Received NFC ID:', nfc_id);
     console.log('Received Token:', token);
-    console.log('JWT_SECRET:', process.env.JWT_SECRET); // Ajoutez ceci pour vérifier que le secret est chargé correctement
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
     try {
         const secret = process.env.JWT_SECRET;
         console.log('Using Secret:', secret);
-        // Vérifiez le JWT en utilisant le secret
         const decoded = jsonwebtoken_1.default.verify(token, secret);
         console.log('Decoded JWT:', decoded);
         let user = yield userModel_1.default.findOne({ nfc_id });
@@ -32,10 +33,14 @@ const authenticateNFC = (req, res) => __awaiter(void 0, void 0, void 0, function
             console.log('User not found with NFC ID:', nfc_id);
             return res.status(401).json({ message: 'Authentication failed' });
         }
-        if (user.payload !== JSON.stringify(decoded)) {
-            console.log('Payload mismatch. User payload:', user.payload, 'Decoded payload:', JSON.stringify(decoded));
+        const encryptedPayload = JSON.parse(user.payload);
+        const userPayload = JSON.parse((0, cryptoUtils_1.decrypt)(encryptedPayload));
+        if (JSON.stringify(userPayload) !== JSON.stringify(decoded)) {
+            console.log('Payload mismatch. User payload:', userPayload, 'Decoded payload:', decoded);
             return res.status(401).json({ message: 'Authentication failed' });
         }
+        const userConnection = new userConnectionModel_1.default({ user: user._id });
+        yield userConnection.save();
         console.log('Authentication successful');
         res.json({ message: 'Authentication successful', user });
     }

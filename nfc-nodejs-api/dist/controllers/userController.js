@@ -12,27 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = exports.getAllUsers = void 0;
+exports.addUser = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
-const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const cryptoUtils_1 = require("../utils/cryptoUtils");
+const addUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { nfc_id, payload } = req.body;
+    if (!nfc_id || !payload) {
+        return res.status(400).json({ message: 'nfc_id and payload are required' });
+    }
     try {
-        const users = yield userModel_1.default.find();
-        res.json(users);
+        const encryptedPayload = (0, cryptoUtils_1.encrypt)(JSON.stringify(payload));
+        const user = new userModel_1.default({ nfc_id, payload: JSON.stringify(encryptedPayload) });
+        yield user.save();
+        res.status(201).json({ message: 'User added successfully', user });
     }
     catch (error) {
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: 'Error adding user', error });
     }
 });
-exports.getAllUsers = getAllUsers;
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { name, email, password } = req.body;
-        const newUser = new userModel_1.default({ name, email, password });
-        yield newUser.save();
-        res.status(201).json(newUser);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Server Error' });
-    }
-});
-exports.createUser = createUser;
+exports.addUser = addUser;
