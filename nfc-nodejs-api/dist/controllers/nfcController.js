@@ -17,16 +17,30 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userModel_1 = __importDefault(require("../models/userModel"));
 const authenticateNFC = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { nfc_id, token } = req.body;
+    console.log('Received NFC ID:', nfc_id);
+    console.log('Received Token:', token);
+    console.log('JWT_SECRET:', process.env.JWT_SECRET); // Ajoutez ceci pour vérifier que le secret est chargé correctement
     try {
-        const decoded = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const secret = process.env.JWT_SECRET;
+        console.log('Using Secret:', secret);
+        // Vérifiez le JWT en utilisant le secret
+        const decoded = jsonwebtoken_1.default.verify(token, secret);
+        console.log('Decoded JWT:', decoded);
         let user = yield userModel_1.default.findOne({ nfc_id });
+        console.log('User found:', user);
         if (!user) {
-            user = new userModel_1.default({ nfc_id, payload: JSON.stringify(decoded) });
-            yield user.save();
+            console.log('User not found with NFC ID:', nfc_id);
+            return res.status(401).json({ message: 'Authentication failed' });
         }
-        res.status(200).json({ message: 'Authentication successful', user });
+        if (user.payload !== JSON.stringify(decoded)) {
+            console.log('Payload mismatch. User payload:', user.payload, 'Decoded payload:', JSON.stringify(decoded));
+            return res.status(401).json({ message: 'Authentication failed' });
+        }
+        console.log('Authentication successful');
+        res.json({ message: 'Authentication successful', user });
     }
     catch (error) {
+        console.error('Error during authentication:', error);
         res.status(401).json({ message: 'Authentication failed', error });
     }
 });
