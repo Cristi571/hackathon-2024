@@ -24,9 +24,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const userSchema = new mongoose_1.Schema({
-    nfc_id: { type: String, required: true },
-    payload: { type: String, required: true },
-}, { timestamps: true });
-const User = mongoose_1.default.model('User', userSchema);
-exports.default = User;
+const userConnectionSchema = new mongoose_1.Schema({
+    user: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'User', required: true },
+    connectedAt: { type: Date, default: Date.now },
+});
+const UserConnection = mongoose_1.default.model('UserConnection', userConnectionSchema);
+exports.default = UserConnection;
