@@ -7,10 +7,9 @@ export interface IUser extends Document {
   updatedAt?: Date;
 }
 
-const userSchema: Schema = new Schema({
+const UserSchema: Schema = new Schema({
   nfc_id: { type: String, required: true },
   payload: { type: String, required: true },
 }, { timestamps: true });
 
-const User = mongoose.model<IUser>('User', userSchema);
-export default User;
+export default mongoose.model<IUser>('User', UserSchema);
