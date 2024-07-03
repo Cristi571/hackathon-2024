@@ -38,18 +38,18 @@ const NfcCardReader: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={startReading} disabled={isReading}>
-                <Text style={styles.buttonText}>{isReading ? 'Reading...' : 'Scan NFC Card'}</Text>
-            </TouchableOpacity>
-            {tagData && (
+            {tagData && ( // Move the tagDataContainer to the top
                 <View style={styles.tagDataContainer}>
                     <Text style={styles.tagDataLabel}>Tag Data:</Text>
                     <Text style={styles.tagDataText}>{tagData}</Text>
                 </View>
             )}
+
+            <TouchableOpacity style={styles.button} onPress={startReading} disabled={isReading}>
+                <Text style={styles.buttonText}>{isReading ? 'Reading...' : 'Scan NFC Card'}</Text>
+            </TouchableOpacity>
         </View>
-    );
-};
+    );};
 
 const styles = StyleSheet.create({
     container: {
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+
 });
 
 export default NfcCardReader;
