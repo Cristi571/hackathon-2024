@@ -10,8 +10,9 @@ export const addUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const encryptedPayload = encrypt(JSON.stringify(payload));
-    const user = new User({ nfc_id, payload: JSON.stringify(encryptedPayload) });
+
+    const user = new User({ nfc_id, payload: JSON.stringify(payload) });
+
     await user.save();
     res.status(201).json({ message: 'User added successfully', user });
   } catch (error) {
