@@ -17,12 +17,12 @@ const generateTimestamps = () => {
 const { iat, exp } = generateTimestamps();
 
 const payload = {
-  sub: '1122334455', // Nouveau NFC ID
-  name: 'Alice Johnson',
-  email: 'alice.johnson@estiam.com',
+  sub: '1122334450', // Nouveau NFC ID
+  name: 'Jaurès Fassinou',
+  email: 'jaures.fass@estiam.com',
   iat, 
   exp, 
-  role: 'admin'
+  role: 'employee'
 
 };
 
