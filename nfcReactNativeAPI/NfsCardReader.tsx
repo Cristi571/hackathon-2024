@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import NfcManager, { Ndef, NfcTech } from 'react-native-nfc-manager';
 
 const NfcCardReader: React.FC = () => {
-    const [tagData, setTagData] = useState<string | null>(null);
+    const [tagData, setTagData] = useState<String | null>(null);
     const [isReading, setIsReading] = useState(false);
 
     useEffect(() => {
