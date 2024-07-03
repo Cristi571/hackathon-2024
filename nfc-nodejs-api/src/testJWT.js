@@ -1,6 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
+
 console.log('Environment Variables:', process.env);
 
 const jwt = require('jsonwebtoken');
@@ -22,13 +23,16 @@ const payload = {
   iat, 
   exp, 
   role: 'admin'
+
 };
 
 const secret = process.env.JWT_SECRET;
 
 if (!secret) {
   console.error('JWT_SECRET is not defined');
+
   process.exit(1); // Quitter le script si JWT_SECRET n'est pas défini
+
 }
 
 console.log('JWT_SECRET:', secret);
@@ -43,6 +47,7 @@ try {
   console.error('Error verifying JWT:', error);
 }
 
+
 // Enregistrer les informations utilisateur pour l'ajouter à la base de données
 const userPayload = {
   nfc_id: payload.sub,
@@ -50,3 +55,4 @@ const userPayload = {
 };
 
 console.log('User Payload:', userPayload);
+

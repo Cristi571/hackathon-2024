@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
+import { encrypt, decrypt } from '../utils/cryptoUtils';
 
 export const addUser = async (req: Request, res: Response) => {
   const { nfc_id, payload } = req.body;
@@ -9,7 +10,9 @@ export const addUser = async (req: Request, res: Response) => {
   }
 
   try {
+
     const user = new User({ nfc_id, payload: JSON.stringify(payload) });
+
     await user.save();
     res.status(201).json({ message: 'User added successfully', user });
   } catch (error) {

@@ -7,9 +7,13 @@ export interface IUser extends Document {
   updatedAt?: Date;
 }
 
+
 const UserSchema: Schema = new Schema({
+
   nfc_id: { type: String, required: true },
   payload: { type: String, required: true },
 }, { timestamps: true });
 
+
 export default mongoose.model<IUser>('User', UserSchema);
+

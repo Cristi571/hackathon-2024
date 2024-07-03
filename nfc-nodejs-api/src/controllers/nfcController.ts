@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel';
 import UserConnection from '../models/userConnectionModel';
 
+
 export const authenticateNFC = async (req: Request, res: Response) => {
   const { nfc_id, token } = req.body;
 
@@ -25,7 +26,9 @@ export const authenticateNFC = async (req: Request, res: Response) => {
       return res.status(401).json({ message: 'Authentication failed' });
     }
 
+
     const userPayload = JSON.parse(user.payload);
+
 
     if (JSON.stringify(userPayload) !== JSON.stringify(decoded)) {
       console.log('Payload mismatch. User payload:', userPayload, 'Decoded payload:', decoded);
@@ -41,4 +44,6 @@ export const authenticateNFC = async (req: Request, res: Response) => {
     console.error('Error during authentication:', error);
     res.status(401).json({ message: 'Authentication failed', error });
   }
+
 };
+
