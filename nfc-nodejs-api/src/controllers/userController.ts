@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
 import { generateToken } from '../utils/jwtUtils';
+import { UserRoles } from '../types/userTypes';
 
 
 // Get all users from MongoDB
@@ -92,6 +93,14 @@ export const updateUser = async (req: Request, res: Response) => {
 // Update an existing user roles
 export const updateUserRoles = async (req: Request, res: Response) => {
   const { id, role } = req.body;
+  if (!id || !role) {
+    return res.status(400).json({ message: 'Missing required parameters {id and/or role}' });
+  }
+
+  // Validate role
+  if (!Object.values(UserRoles).includes(role)) {
+    return res.status(400).json({ message: 'Invalid role' });
+  }
 
   try {
       // Update user information in the database
@@ -101,7 +110,7 @@ export const updateUserRoles = async (req: Request, res: Response) => {
           return res.status(404).json({ message: 'User not found' });
       }
 
-      res.json({ message: 'User updated successfully', user: updatedUserRoles });
+      res.json({ message: 'User role updated successfully', user: updatedUserRoles });
   } catch (error) {
       console.error('Error updating user:', error);
       res.status(500).json({ message: 'Server error', error });

@@ -8,6 +8,6 @@ const router = Router();
 router.get('/list', isAdminOrManager, getAllUsers);
 router.post('/create', isAdminOrManager, createUser);
 router.patch('/update', isAdminOrManagerOrHimself, updateUser);
-router.patch('/updateRoles', isAdminOrManager, updateUserRoles);
+router.patch('/update-role', isAdminOrManager, updateUserRoles);
 
 export default router;
