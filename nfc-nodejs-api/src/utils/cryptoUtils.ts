@@ -19,4 +19,8 @@ export function decrypt(text: any) {
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1cb9da7403449d08a044c7cb0e7b24bf02c50285

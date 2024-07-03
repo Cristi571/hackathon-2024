@@ -45,4 +45,9 @@ export const authenticateNFC = async (req: Request, res: Response) => {
     res.status(401).json({ message: 'Authentication failed', error });
   }
 
+<<<<<<< HEAD
 };
+=======
+};
+
+>>>>>>> 1cb9da7403449d08a044c7cb0e7b24bf02c50285
