@@ -1,11 +1,13 @@
 import { Router } from 'express';
-import { getAllUsers, createUser } from '../controllers/userController';
-import { isAdmin } from '../middlewares/permissions'; 
+import { getAllUsers, createUser, updateUser, updateUserRoles } from '../controllers/userController';
+import { isAdmin, isManager, isHimself, isAdminOrManager, isAdminOrManagerOrHimself } from '../middlewares/permissions'; 
 
 
 const router = Router();
 
-router.get('/list', isAdmin, getAllUsers);
-router.post('/create', createUser);
+router.get('/list', isAdminOrManager, getAllUsers);
+router.post('/create', isAdminOrManager, createUser);
+router.patch('/update', isAdminOrManagerOrHimself, updateUser);
+router.patch('/updateRoles', isAdminOrManager, updateUserRoles);
 
 export default router;

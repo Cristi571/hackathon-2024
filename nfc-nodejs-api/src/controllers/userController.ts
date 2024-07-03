@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
-import { v4 as uuidv4 } from 'uuid';
 import { generateToken } from '../utils/jwtUtils';
 
 
@@ -11,7 +10,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const users = await User.find();
 
     // Return the array of users as JSON response
-    res.json(users);
+    res.status(200).json(users);
   } catch (error) {
     // Handle server errors if something goes wrong with database query
     res.status(500).json({ message: 'Server Error' });
@@ -34,13 +33,11 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // Generate a unique ID for the user
-    const userId = uuidv4();
-
     // Create the payload for the JWT token
     const payload = {
-      sub: userId,
-      name: `${firstname} ${lastname}`,
+      token : '',
+      firstname,
+      lastname,
       email,
       role,
       iat: Math.floor(Date.now() / 1000),
@@ -49,24 +46,19 @@ export const createUser = async (req: Request, res: Response) => {
     
     // Generate the JWT token
     const token = generateToken(payload);
+    
+    // Add the generated token to the payload object
+    payload.token = token;
 
     // Create a new user instance
-    const user = new User({ 
-      token,
-      id: userId,
-      firstname,
-      lastname,
-      email,
-      role
-    });
+    const user = new User(payload);
     
     await user.save();
 
     // Return the new user data with the token
     res.status(201).json({ 
       message: 'User created successfully', 
-      token, 
-      user: { id: userId, firstname, lastname, email, role } 
+      user : payload
     });
 
   } catch (error: any) {
@@ -74,4 +66,44 @@ export const createUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 
+};
+
+
+// Update an existing user
+export const updateUser = async (req: Request, res: Response) => {
+  const { id, firstname, lastname, email } = req.body;
+
+  try {
+      // Update user information in the database
+      const updatedUser = await User.findByIdAndUpdate(id, { firstname, lastname, email }, { new: true });
+
+      if (!updatedUser) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+// Update an existing user roles
+export const updateUserRoles = async (req: Request, res: Response) => {
+  const { id, role } = req.body;
+
+  try {
+      // Update user information in the database
+      const updatedUserRoles = await User.findByIdAndUpdate(id, { role }, { new: true });
+
+      if (!updatedUserRoles) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      res.json({ message: 'User updated successfully', user: updatedUserRoles });
+  } catch (error) {
+      console.error('Error updating user:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
 };
