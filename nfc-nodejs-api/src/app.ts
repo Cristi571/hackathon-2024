@@ -1,6 +1,7 @@
 import express from 'express';
 import routes from './routes'; // Import the main router from the routes directory
-import { logger, notFoundHandler, errorHandler } from './middlewares/logger'; // Import the logger and error-handling middlewares
+// Import the logger and error-handling middlewares
+import { logger, notFoundHandler, errorHandler } from './middlewares/logger'; 
 
 const app = express();
 
