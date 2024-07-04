@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import crypto from 'crypto';
 import User from '../models/userModel';
 import { generateToken } from '../utils/jwtUtils';
 import { UserRoles } from '../types/userTypes';
@@ -21,52 +22,70 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 // Create a new user
 export const createUser = async (req: Request, res: Response) => {
-    const { firstname, lastname, email, role } = req.body;
-    
-    if (!firstname || !lastname || !email || !role) {
-        return res.status(400).json({ message: 'All fields are required' });
+    const { firstname, lastname, email, password, role } = req.body;
+  
+    if (!firstname || !lastname || !email || !password || !role) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
   
     try {
-        // Check if the user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
+      // Vérifiez si l'utilisateur existe déjà
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
         return res.status(400).json({ message: 'Email already exists' });
-        }
-
-        // Create the payload for the JWT token
-        const payload = {
+      }
+      
+      // Prepare the payload
+      const payload = {
         token : '',
         firstname,
         lastname,
         email,
         role,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 365) // 1 year expiration
-        };
-        
-        // Generate the JWT token
-        const token = generateToken(payload);
-        
-        // Add the generated token to the payload object
-        payload.token = token;
+        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 365) // Expiration d'un an
+      };
+  
+      // Créez un sel et hachez le mot de passe
+      const salt = crypto.randomBytes(16).toString('hex');
+      const hashedPassword = crypto.createHmac('sha256', salt)
+        .update(password)
+        .digest('hex');
+      
+      const fullHashedPassword = `${salt}:${hashedPassword}`;
+  
+      // Générez le token JWT
+      const token = generateToken(payload);
 
-        // Create a new user instance
-        const user = new User(payload);
-        
-        await user.save();
-
-        // Return the new user data with the token
-        res.status(201).json({ 
-        message: 'User created successfully', 
-        user : payload
-        });
-
+  
+      // Créez une nouvelle instance de l'utilisateur
+      const user = new User({
+        token,
+        firstname,
+        lastname,
+        email,
+        password: fullHashedPassword,
+        role
+      });
+  
+      await user.save();
+  
+      // Retournez les données de l'utilisateur avec le token
+      res.status(201).json({
+        message: 'User created successfully',
+        user: {
+          firstname,
+          lastname,
+          email,
+          role,
+          token
+        }
+      });
+  
     } catch (error: any) {
-        console.error('Error creating user:', error);
-        res.status(500).json({ message: 'Server error', error: error.message });
+      console.error('Error creating user:', error);
+      res.status(500).json({ message: 'Server error', error: error.message });
     }
-
 };
 
 
