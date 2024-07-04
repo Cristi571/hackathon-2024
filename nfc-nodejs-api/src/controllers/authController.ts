@@ -3,6 +3,13 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/userModel';
 import UserConnection from '../models/userConnectionModel';
+import UserLogin from '../models/userLoginModel';
+
+const generateAccessToken = (payload: any) => {
+    return jwt.sign(payload, process.env.JWT_SECRET!, {
+        expiresIn: '24h',
+    });
+};
 
 // Authenticate user based on JWT token and MongoDB data
 export const authenticateUser = async (req: Request, res: Response) => {
@@ -26,6 +33,11 @@ export const authenticateUser = async (req: Request, res: Response) => {
             // Create a new UserConnection record
             const userConnection = new UserConnection({ user: user._id, connectedAt: new Date() });
             await userConnection.save();
+
+            // Log the user login
+            const ipAddress = req.ip || req.connection.remoteAddress || '';
+            const userLogin = new UserLogin({ userId: user._id, ipAddress });
+            await userLogin.save();
 
             // Return success response with decoded token data and user information
             return res.json({ success: true, user });
