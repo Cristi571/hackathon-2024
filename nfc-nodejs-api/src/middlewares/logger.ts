@@ -4,19 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 
 // Middleware to log request details
 export const logger = (req: Request, res: Response, next: NextFunction) => {
-    // Store the original send method
-    const originalSend = res.send;
-
-    // Override the send method to log the response status code
-    res.send = function(...args) {
-        const timestamp = new Date().toISOString();
-        console.log(`${timestamp} | [${req.method}] | ${req.originalUrl} | ${res.statusCode}`);
-        
-        // Call the original send method
-        return originalSend.apply(res, args);
-    };
-
-    next();
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} | [${req.method}] | ${req.originalUrl} | ${res.statusCode}`);
+    next(); // Call next to move to the next middleware in the chain
 };
 
 // Middleware to handle 404 errors

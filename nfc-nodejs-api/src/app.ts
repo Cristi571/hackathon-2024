@@ -8,10 +8,9 @@ const app = express();
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-
-app.use(routes);
 // Use the logger middleware
 app.use(logger);
+app.use(routes);
 // Handle 404 errors
 app.use(notFoundHandler);
 // Handle other errors
