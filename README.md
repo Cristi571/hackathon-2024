@@ -2,6 +2,8 @@
 
 La technologie NFC (Near Field Communication) permet à des appareils compatibles de communiquer sans fil lorsqu'ils sont très proches, généralement à moins de 4 cm. Elle fonctionne à une fréquence de 13,56 MHz et est souvent utilisée pour les paiements sans contact, le partage de fichiers et les cartes d'accès.
 
+On notera également que, dans les projets comportant une base de données, des failles telles que les injections XSS et les injections SQL sont souvent présentes. Pour y remédier, il est possible d'appliquer des filtres et de transformer certaines commandes ou caractères spécifiques en caractères vides. Cela permet d'éviter les injections et d'empêcher l'exécution de code malveillant.
+
 ## Modèle de Menace et Évaluation des Vulnérabilités NFC
 
 ### Étape 1: Identification des Composants
@@ -102,4 +104,3 @@ L'impact potentiel de cette solution est significatif :
 - Réduction des risques liés à la gestion des mots de passe, facilitant l'audit et le contrôle des accès.
 
 En conclusion, cette solution d'authentification sans mot de passe basée sur la technologie NFC offre des avantages significatifs en termes de sécurité, d'expérience utilisateur et d'efficacité opérationnelle, tout en répondant aux défis actuels de la cybersécurité.
-
