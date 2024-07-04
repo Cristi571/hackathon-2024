@@ -7,7 +7,7 @@ return (
     <nav className="navbar">
         <div className="navbar-container">
             <Link to="/" className="navbar-logo">
-                Logo
+                REACT CONNECT
             </Link>
             <div className="menu-links">
                 <Link to="/" className="navbar-item">
