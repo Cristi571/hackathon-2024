@@ -45,4 +45,17 @@ export const styles = StyleSheet.create({
     label: {
         textAlign: "left",
     },
+    tagDataContainer: {
+        marginTop: 10, // Add some margin to separate it from the image
+        padding: 10,
+        backgroundColor: 'lightgray', // Optional background color for visibility
+        borderRadius: 5,
+    },
+    tagDataLabel: {
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    tagDataText: {
+        fontSize: 16,
+    },
 })
